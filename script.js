@@ -45,12 +45,17 @@ const getWeather = (city, countryCode) => {
 	)
 		.then((response) => response.json())
 		.then((data) => {
+			console.log(data);
 			const weatherCard = $("<div>")
 				.addClass("card px-3 py-3 my-4")
 				.append(
 					$("<h1>")
 						.addClass("card-title")
-						.text(`${data.name}, ${moment().format("MMMM Do YYYY")}`),
+						.text(
+							`${data.name},${data.sys.country} ${moment().format(
+								"MMMM Do YYYY"
+							)}`
+						),
 					$("<p>")
 						.addClass("card-text")
 						.text(`Temp: ${Math.round(data.main.temp - 273.15)}°C`),
