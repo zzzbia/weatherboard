@@ -2,6 +2,16 @@ const apiKey = "9f16d208ad1cda81d1b3a4d27caa60bf";
 
 // https://openweathermap.org/api/one-call-3
 
+const showPreviousSearches = () => {
+	searches = JSON.parse(localStorage.getItem("previousSearches"));
+	if (searches) {
+		$("#previous-searches").empty();
+		searches.forEach((search) => {
+			$("#previous-searches").append(`<li>${search}</li>`);
+		});
+	}
+};
+
 const getWeatherForecast = (city, country) => {
 	fetch(
 		`https://api.openweathermap.org/data/2.5/forecast?q=${city},${country}&appid=${apiKey}`
@@ -9,6 +19,7 @@ const getWeatherForecast = (city, country) => {
 		.then((response) => response.json())
 		.then((data) => {
 			$("#weather-forecast").empty();
+			console.log(data);
 			data.list.forEach((item) => {
 				if (item.dt_txt.includes("12:00:00")) {
 					const forecastCard = $("<div>")
@@ -20,6 +31,9 @@ const getWeatherForecast = (city, country) => {
 									$("<h5>")
 										.addClass("card-title")
 										.text(new Date(item.dt_txt).toLocaleDateString()),
+									$("<img>").prop({
+										src: `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`,
+									}),
 									$("<p>")
 										.addClass("card-text")
 										.text(`Temp: ${Math.round(item.main.temp - 273.15)}°C`),
@@ -55,7 +69,11 @@ const getWeather = (city, countryCode) => {
 							`${data.name},${data.sys.country} ${moment().format(
 								"MMMM Do YYYY"
 							)}`
+						)
+						.prepend(
+							`<img src="http://openweathermap.org/img/wn/${data.weather[0].icon}.png">`
 						),
+
 					$("<p>")
 						.addClass("card-text")
 						.text(`Temp: ${Math.round(data.main.temp - 273.15)}°C`),
@@ -74,16 +92,19 @@ document.getElementById("citySearch").addEventListener("click", (e) => {
 	e.preventDefault();
 	const searchQuery = document.getElementById("search").value;
 	if (searchQuery.length > 0) {
+		let previousSearches = [];
+		if (localStorage.getItem("previousSearches") !== null) {
+			previousSearches = JSON.parse(localStorage.getItem("previousSearches"));
+		}
+		previousSearches.push(searchQuery);
+		localStorage.setItem("previousSearches", JSON.stringify(previousSearches));
 		getWeather(searchQuery, "");
 		getWeatherForecast(searchQuery, "");
+		showPreviousSearches();
 	}
 });
 
 // on first call we will run the weather for toronto
+showPreviousSearches();
 getWeather("Toronto", "CA");
 getWeatherForecast("Toronto", "CA");
-// after searching for a city get current weather conditions (for that city) and then that city is added to search history
-
-//include success vs modal error 404 response
-// 5-Day Forecast, icons come from open weather
-//

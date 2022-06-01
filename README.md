@@ -19,7 +19,7 @@
 
 
 ## Deployed Link
- - [Try out the Weather Board!](insertlink)
+ - [Try out the Weather Board!](https://zzzbia.github.io/weatherboard/)
  
 
 
