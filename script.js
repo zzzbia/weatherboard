@@ -2,16 +2,6 @@ const apiKey = "9f16d208ad1cda81d1b3a4d27caa60bf";
 
 // https://openweathermap.org/api/one-call-3
 
-const showPreviousSearches = () => {
-	searches = JSON.parse(localStorage.getItem("previousSearches"));
-	if (searches) {
-		$("#previous-searches").empty();
-		searches.forEach((search) => {
-			$("#previous-searches").append(`<li>${search}</li>`);
-		});
-	}
-};
-
 const getWeatherForecast = (city, country) => {
 	fetch(
 		`https://api.openweathermap.org/data/2.5/forecast?q=${city},${country}&appid=${apiKey}`
@@ -52,7 +42,23 @@ const getWeatherForecast = (city, country) => {
 		});
 };
 
-const getWeather = (city, countryCode) => {
+const getUV = (lat, lon) => {
+	fetch(
+		`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`
+	)
+		.then((response) => response.json())
+		.then((data) => {
+			console.log(data, "HELLOOOOO");
+			const uvtext = $("<div>")
+				.addClass("card px-3 py-3 my-4")
+				.append(
+					$("<p>").addClass("card-text").text(`UV-Index: ${data.current.uvi}%`)
+				);
+			$("#weather").append(uvtext);
+		});
+};
+
+const getWeather = (city, countryCode = "US") => {
 	/// Country code is only required if country is not USA
 	fetch(
 		`https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${apiKey}`
@@ -66,7 +72,7 @@ const getWeather = (city, countryCode) => {
 					$("<h1>")
 						.addClass("card-title")
 						.text(
-							`${data.name},${data.sys.country} ${moment().format(
+							`${data.name}, ${data.sys.country} - ${moment().format(
 								"MMMM Do YYYY"
 							)}`
 						)
@@ -84,6 +90,8 @@ const getWeather = (city, countryCode) => {
 				);
 
 			$("#weather").empty().append(weatherCard);
+
+			getUV(data.coord.lat, data.coord.lon);
 		})
 		.catch((e) => console.error(e));
 };
@@ -103,6 +111,21 @@ document.getElementById("citySearch").addEventListener("click", (e) => {
 		showPreviousSearches();
 	}
 });
+
+const showPreviousSearches = () => {
+	searches = JSON.parse(localStorage.getItem("previousSearches"));
+	if (searches) {
+		$("#previous-searches").empty();
+		searches.forEach((search) => {
+			const element = $(`<li>${search}</li>`).on("click", () => {
+				getWeather(search, "");
+				getWeatherForecast(search, "");
+			});
+			element.addClass("list-group-item search-history-item");
+			$("#previous-searches").append(element);
+		});
+	}
+};
 
 // on first call we will run the weather for toronto
 showPreviousSearches();
