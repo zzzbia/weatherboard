@@ -44,7 +44,7 @@ const getWeatherForecast = (city, country) => {
 										.addClass("card-text")
 										// the text that is retrieved is the wind speed, miles per second
 										.text(`Wind: ${item.wind.speed} m/s`),
-									// pass a paragraph element with the class "card text" (to add bootstrap styling
+									// pass a paragraph element with the class "card text" (to add bootstrap styling)
 									$("<p>")
 										.addClass("card-text")
 										// the text that is rendered is the items humidity percentage
@@ -82,17 +82,19 @@ const getUV = (lat, lon) => {
 				.append(
 					$("<div>")
 						.addClass("card-text")
+						// adding UV-Index and appending a span which adds the class styling "badge badge-pill" and calling the badge variable we created previously
 						.html(`UV-Index: `)
 						.append(
 							$("<span>")
 								.addClass(`badge badge-pill ${badge}`)
+								// add in the data for the uvi
 								.html(`${data.current.uvi}%`)
 						)
 				);
 			$("#weather").append(uvtext);
 		});
 };
-
+// create a function called getWeather which takes in the parameters of city and country code (default to US)
 const getWeather = (city, countryCode = "US") => {
 	/// Country code is only required if country is not USA
 	fetch(
@@ -101,26 +103,36 @@ const getWeather = (city, countryCode = "US") => {
 		.then((response) => response.json())
 		.then((data) => {
 			console.log(data);
+			// create a weather card function that creates a div
 			const weatherCard = $("<div>")
+				// add class of "card px-3 py-3 my-4" (to add bootstrap styling)
 				.addClass("card px-3 py-3 my-4")
+				// then append it to a heading <h1> and add the class "card-title"
 				.append(
 					$("<h1>")
 						.addClass("card-title")
+						// add text of the name, the country and then moment formatting the date
 						.text(
 							`${data.name}, ${data.sys.country} - ${moment().format(
 								"MMMM Do YYYY"
 							)}`
 						)
+						// add to the front with prepend, the weather icon
 						.prepend(
 							`<img src="http://openweathermap.org/img/wn/${data.weather[0].icon}.png">`
 						),
-
+					// create a paragraph element that adds the class of "card-text"
 					$("<p>")
 						.addClass("card-text")
+						// rounding the text from kelvin to celcius
 						.text(`Temp: ${Math.round(data.main.temp - 273.15)}°C`),
+					// create a paragraph and then add the class "card-text"
+					//the text that is retrieved is the wind speed, miles per second
 					$("<p>").addClass("card-text").text(`Wind: ${data.wind.speed} m/s`),
 					$("<p>")
+						// create a paragraph and then add the class "card-text"
 						.addClass("card-text")
+						// the text that is rendered is the items humidity percentage
 						.text(`Humidity: ${data.main.humidity}%`)
 				);
 

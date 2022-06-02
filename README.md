@@ -3,7 +3,7 @@
 ## ✏️ Description
 Do you need your rain boots? Or Do you need a sun hat? If you aren't sure the weather board will let you know, if you do! 
  A weather board that allows the user to search for their city's weather and see the expected weather for the week! 
- 
+
 ## Expectations
 - Search for a city and see the current weather
 - Click on past searched cities to see previous results
@@ -21,7 +21,7 @@ Do you need your rain boots? Or Do you need a sun hat? If you aren't sure the we
 - [References](#References)
 
 ## 🖼️ Images and Screenshots
- ![WelcomePage](insertlink)
+ ![Demo](https://github.com/zzzbia/weatherboard/blob/main/assets/images/weatherboarddemopic.png?raw=true)
  
 
 
