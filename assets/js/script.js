@@ -135,27 +135,34 @@ const getWeather = (city, countryCode = "US") => {
 						// the text that is rendered is the items humidity percentage
 						.text(`Humidity: ${data.main.humidity}%`)
 				);
-
+			// emptying weather dom node before appending the data
 			$("#weather").empty().append(weatherCard);
-
+			// running getUV function with the city coordinates
 			getUV(data.coord.lat, data.coord.lon);
 		})
+		// error handling, if something went wrong then alert and console log error
 		.catch((e) => {
 			alert("Something went wrong.. Please recheck the city and try again");
 			console.error(e);
 		});
 };
 
+// getting the element by Id "citySearch" and adding an event listener that listens for click and event
 document.getElementById("citySearch").addEventListener("click", (e) => {
 	e.preventDefault();
+	// setting the search value to a constant search query variable
 	const searchQuery = document.getElementById("search").value;
+	// if the search query is greater than 0 length then let the previousSearches equal an empty array
 	if (searchQuery.length > 0) {
 		let previousSearches = [];
+		// if the localStorage contains previousSearches then set previousSearches to the stored value
 		if (localStorage.getItem("previousSearches") !== null) {
 			previousSearches = JSON.parse(localStorage.getItem("previousSearches"));
 		}
+		//push the new search query into the previous searches and then set it to localStorage
 		previousSearches.push(searchQuery);
 		localStorage.setItem("previousSearches", JSON.stringify(previousSearches));
+		// then run the function with the new search query
 		getWeather(searchQuery, "");
 		getWeatherForecast(searchQuery, "");
 		showPreviousSearches();
